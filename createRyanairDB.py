@@ -1,15 +1,34 @@
 import sqlite3
 
-# Connect to the database (or create it if it doesn't exist)
-conn = sqlite3.connect('example.db')
+# Connect to the database (if it doesn't exist, it will be created)
+conn = sqlite3.connect('ryan.db')
 
-# Create a cursor object to execute SQL statements
-c = conn.cursor()
+# Create a cursor object
+cursor = conn.cursor()
 
-# Create a new table called "users"
-c.execute('''CREATE TABLE users
-             (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)''')
+# Create the table
+cursor.execute('''CREATE TABLE destinations 
+                  (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                   originAirportCode CHAR(3), 
+                   destinationAirportCode CHAR(3))''')
 
-# Commit the changes and close the connection
+# Create the airports table
+cursor.execute('''CREATE TABLE airports 
+                  (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                   airportCode CHAR(3), 
+                   airportName TEXT, 
+                   airportSeoName TEXT, 
+                   airportCountryCode CHAR(2), 
+                   airportCountryName TEXT, 
+                   airportCityName TEXT, 
+                   airportTimeZone TEXT, 
+                   currency CHAR(3), 
+                   latitude REAL, 
+                   longitude REAL, 
+                   dateChecked DATETIME)''')
+
+# Commit the changes
 conn.commit()
+
+# Close the connection
 conn.close()

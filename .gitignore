@@ -130,3 +130,6 @@ dmypy.json
 
 # GSpread creds
 sa_creds.json
+
+#database
+.db

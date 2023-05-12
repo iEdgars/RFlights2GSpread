@@ -6,7 +6,10 @@ def getDestinations(airportFrom: str, version: int):
     if version == 1:
         base = f'{baseURL}/locate/v5/routes'
         departureAirportCode = f'departureAirportCode={airportFrom.upper()}'
-        fields = 'fields=arrivalAirport.code&fields=arrivalAirport.name&fields=arrivalAirport.seoName&fields=arrivalAirport.timeZone&fields=arrivalAirport.city.code&fields=arrivalAirport.city.name&fields=arrivalAirport.coordinates.latitude&fields=arrivalAirport.coordinates.longitude&fields=arrivalAirport.country.code&fields=arrivalAirport.country.name&fields=arrivalAirport.country.currency&fields=operator'
+        fields = 'fields=arrivalAirport.code&fields=arrivalAirport.name&fields=arrivalAirport.seoName&'\
+                  'fields=arrivalAirport.timeZone&fields=arrivalAirport.city.code&fields=arrivalAirport.city.name&'\
+                  'fields=arrivalAirport.coordinates.latitude&fields=arrivalAirport.coordinates.longitude&'\
+                  'fields=arrivalAirport.country.code&fields=arrivalAirport.country.name&fields=arrivalAirport.country.currency&fields=operator'
         fullURL = f'{base}?{departureAirportCode}&{fields}'
     elif version == 2:
         base = f'{baseURL}/views/locate/searchWidget/routes/en/airport/'
@@ -14,7 +17,7 @@ def getDestinations(airportFrom: str, version: int):
     return fullURL
 
 
-def readDestinations(trip, mappingFor, destinationsJSON, destinationsList):
+def readDestinations(origin: str, destinationsJSON, destinationsList: list, airportsList: list):
 #read destinations from JSON into list
     for d in destinationsJSON:
         dArrivalAirportCode = d['arrivalAirport']['code']
@@ -28,4 +31,6 @@ def readDestinations(trip, mappingFor, destinationsJSON, destinationsList):
         dlatitude = str(d['arrivalAirport']['coordinates']['latitude'])
         dlongitude = str(d['arrivalAirport']['coordinates']['longitude'])
         dDateChecked = str(date.today())
-        destinationsList.append([trip, mappingFor, dArrivalAirportCode, dAirportName, dAirportSeoName, dAirportCountryCode, dAirportCountryName, dAirportCityName, dAirportTimeZone, dCurrency, dlatitude, dlongitude, dDateChecked])
+        destinationsList.append([origin, dArrivalAirportCode, dDateChecked])
+        airportsList.append([dArrivalAirportCode, dAirportName, dAirportSeoName, dAirportCountryCode, 
+                                 dAirportCountryName, dAirportCityName, dAirportTimeZone, dCurrency, dlatitude, dlongitude, dDateChecked])

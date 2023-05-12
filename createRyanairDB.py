@@ -10,7 +10,8 @@ cursor = conn.cursor()
 cursor.execute('''CREATE TABLE destinations 
                   (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                    originAirportCode CHAR(3), 
-                   destinationAirportCode CHAR(3))''')
+                   destinationAirportCode CHAR(3)), 
+                   dateChecked DATETIME)''')
 
 # Create the airports table
 cursor.execute('''CREATE TABLE airports 

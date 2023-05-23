@@ -130,6 +130,10 @@ dmypy.json
 
 # GSpread creds
 sa_creds.json
+serviceAccount.json
+account.json
+flightsAccount.json
+amisAccount.json
 
 #database
 .db

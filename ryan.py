@@ -36,7 +36,7 @@ def readDestinationsOld(origin: str, destinationsJSON, destinationsList: list, a
                                  dAirportCountryName, dAirportCityName, dAirportTimeZone, dCurrency, dlatitude, dlongitude, dDateChecked])
 
 
-def readDestinations(destinationsJSON, destinationsList: list, fireCollection, fireBatch, fireDB):
+def readDestinations(destinationsJSON, destinationsList: list, fireBatch, fireDB):
 #read destinations from JSON into list
     for d in destinationsJSON:
         dArrivalAirportCode = d['arrivalAirport']['code']
@@ -55,7 +55,7 @@ def readDestinations(destinationsJSON, destinationsList: list, fireCollection, f
         destinationsList.append(dArrivalAirportCode)
 
         #Setting Firebase batch load of Airports
-        ref = fireDB.collection('Airpots').document(dArrivalAirportCode)
+        ref = fireDB.collection('Airports').document(dArrivalAirportCode)
         fireBatch.set(ref, {
             'AirportCode': dArrivalAirportCode,
             'AirportName': dAirportName,

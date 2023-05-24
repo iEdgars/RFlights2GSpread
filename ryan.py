@@ -17,7 +17,7 @@ def getDestinations(airportFrom: str, version: int):
     return fullURL
 
 
-def readDestinations(origin: str, destinationsJSON, destinationsList: list, airportsList: list):
+def readDestinationsOld(origin: str, destinationsJSON, destinationsList: list, airportsList: list):
 #read destinations from JSON into list
     for d in destinationsJSON:
         dArrivalAirportCode = d['arrivalAirport']['code']
@@ -34,3 +34,38 @@ def readDestinations(origin: str, destinationsJSON, destinationsList: list, airp
         destinationsList.append([origin, dArrivalAirportCode, dDateChecked])
         airportsList.append([dArrivalAirportCode, dAirportName, dAirportSeoName, dAirportCountryCode, 
                                  dAirportCountryName, dAirportCityName, dAirportTimeZone, dCurrency, dlatitude, dlongitude, dDateChecked])
+
+
+def readDestinations(destinationsJSON, destinationsList: list, fireCollection, fireBatch, fireDB):
+#read destinations from JSON into list
+    for d in destinationsJSON:
+        dArrivalAirportCode = d['arrivalAirport']['code']
+        dAirportName = d['arrivalAirport']['name']
+        dAirportSeoName = d['arrivalAirport']['seoName']
+        dAirportCountryCode = d['arrivalAirport']['country']['code']
+        dAirportCountryName = d['arrivalAirport']['country']['name']
+        dAirportCityName = d['arrivalAirport']['city']['name']
+        dAirportTimeZone = d['arrivalAirport']['timeZone']
+        dCurrency = d['arrivalAirport']['country']['currency']
+        dlatitude = d['arrivalAirport']['coordinates']['latitude']
+        dlongitude = d['arrivalAirport']['coordinates']['longitude']
+        dDateChecked = int(str(date.today()).replace('-',''))
+
+        #List for Destination on Firebase
+        destinationsList.append(dArrivalAirportCode)
+
+        #Setting Firebase batch load of Airports
+        ref = fireDB.collection('Airpots').document(dArrivalAirportCode)
+        fireBatch.set(ref, {
+            'AirportCode': dArrivalAirportCode,
+            'AirportName': dAirportName,
+            'AirportSeoName': dAirportSeoName,
+            'AirportCountryCode': dAirportCountryCode,
+            'AirportCountryName': dAirportCountryName,
+            'AirportCityName': dAirportCityName,
+            'AirportTimeZone': dAirportTimeZone,
+            'Currency': dCurrency,
+            'latitude': dlatitude,
+            'longitude': dlongitude,
+            'CheckDate': dDateChecked
+        })

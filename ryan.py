@@ -1,4 +1,4 @@
-from datetime import date, timedelta, datetime
+from datetime import date
 
 baseURL = 'https://www.ryanair.com/api'
 
@@ -16,27 +16,8 @@ def getDestinations(airportFrom: str, version: int):
         fullURL = f'{base}{airportFrom.upper()}'
     return fullURL
 
-
-def readDestinationsOld(origin: str, destinationsJSON, destinationsList: list, airportsList: list):
-#read destinations from JSON into list
-    for d in destinationsJSON:
-        dArrivalAirportCode = d['arrivalAirport']['code']
-        dAirportName = d['arrivalAirport']['name']
-        dAirportSeoName = d['arrivalAirport']['seoName']
-        dAirportCountryCode = d['arrivalAirport']['country']['code']
-        dAirportCountryName = d['arrivalAirport']['country']['name']
-        dAirportCityName = d['arrivalAirport']['city']['name']
-        dAirportTimeZone = d['arrivalAirport']['timeZone']
-        dCurrency = d['arrivalAirport']['country']['currency']
-        dlatitude = str(d['arrivalAirport']['coordinates']['latitude'])
-        dlongitude = str(d['arrivalAirport']['coordinates']['longitude'])
-        dDateChecked = str(date.today())
-        destinationsList.append([origin, dArrivalAirportCode, dDateChecked])
-        airportsList.append([dArrivalAirportCode, dAirportName, dAirportSeoName, dAirportCountryCode, 
-                                 dAirportCountryName, dAirportCityName, dAirportTimeZone, dCurrency, dlatitude, dlongitude, dDateChecked])
-
-
-def readDestinations(destinationsJSON, destinationsList: list, fireBatch, fireDB):
+def readDestinations(destinationsJSON, fireBatch, fireDB):
+    destinationsList = []
 #read destinations from JSON into list
     for d in destinationsJSON:
         dArrivalAirportCode = d['arrivalAirport']['code']
@@ -69,3 +50,5 @@ def readDestinations(destinationsJSON, destinationsList: list, fireBatch, fireDB
             'longitude': dlongitude,
             'CheckDate': dDateChecked
         })
+
+    return destinationsList

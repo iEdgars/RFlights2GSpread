@@ -14,6 +14,13 @@ def getDestinations(airportFrom: str, version: int):
     elif version == 2:
         base = f'{baseURL}/views/locate/searchWidget/routes/en/airport/'
         fullURL = f'{base}{airportFrom.upper()}'
+
+    return fullURL
+
+def getFlights(destination: str, origin: str, Outbound: str, Return: str):
+    base = f'{baseURL}/booking/v4/en-en/availability'
+    fullURL = f'{base}?ADT=1&CHD=0&Destination={destination}&INF=0&Origin={origin}&TEEN=0&IncludeConnectingFlights=false&DateOut={Outbound}&FlexDaysOut=6&DateIn={Return}&FlexDaysIn=6&RoundTrip=true&ToUs=AGREED'
+    
     return fullURL
 
 def readDestinations(destinationsJSON, fireBatch, fireDB):

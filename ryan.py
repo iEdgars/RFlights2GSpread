@@ -59,3 +59,33 @@ def readDestinations(destinationsJSON, fireBatch, fireDB):
         })
 
     return destinationsList
+
+#date / time formatting:
+def ryanDateTime(dateTime: str, returnFormat: str='date'):
+    #dateTime should be in format YYYY-MM-DDTHH:MM:SS.sss
+    #returnFormat should be: date, dateid, hour, minute, time, datetime, dateid:int, hour:int, minute:int
+    simpleDate = dateTime.split('T')[0]
+    dateid = simpleDate.replace('-','')
+    hour = dateTime.split('T')[1].split(':')[0]
+    minute = dateTime.split('T')[1].split(':')[1]
+    time = f"{hour}:{minute}"
+    datetime = f"{dateid}_{time}"
+
+    if returnFormat == 'date':
+        return simpleDate
+    if returnFormat == 'dateid':
+        return dateid
+    if returnFormat == 'dateid:int':
+        return int(dateid)
+    if returnFormat == 'hour':
+        return hour
+    if returnFormat == 'hour:int':
+        return int(hour)
+    if returnFormat == 'minute':
+        return minute
+    if returnFormat == 'minute:int':
+        return int(minute)
+    if returnFormat == 'time':
+        return time
+    if returnFormat == 'datetime':
+        return datetime

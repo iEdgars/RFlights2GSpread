@@ -62,8 +62,17 @@ def readDestinations(destinationsJSON, fireBatch, fireDB):
 
 #date / time formatting:
 def ryanDateTime(dateTime: str, returnFormat: str='date'):
-    #dateTime should be in format YYYY-MM-DDTHH:MM:SS.sss
-    #returnFormat should be: date, dateid, hour, minute, time, datetime, dateid:int, hour:int, minute:int
+    #dateTime should be in format YYYY-MM-DDTHH:MM:SS.sss ['2023-01-17T15:55:00.000']
+    #returnFormat should be: 
+        #date ['2023-01-17'], 
+        #dateid ['20230117'], 
+        #hour ['15'], 
+        #minute ['55'], 
+        #time ['15:55'], 
+        #datetime ['20230117_15:55'], 
+        #dateid:int [20230117], 
+        #hour:int [15], 
+        #minute:int [55]
     simpleDate = dateTime.split('T')[0]
     dateid = simpleDate.replace('-','')
     hour = dateTime.split('T')[1].split(':')[0]

@@ -98,3 +98,58 @@ def ryanDateTime(dateTime: str, returnFormat: str='date'):
         return time
     if returnFormat == 'datetime':
         return datetime
+    
+#read and save flight data
+def readFlights(flightsJSON, fireBatch, fireDB):
+    for f in flightsJSON['trips']:
+        for d in f['dates']:
+            if d['flights'] != []:
+                for flight in d['flights']:
+                    liftoffLocal = flight['time'][0]
+                    landingLocal = flight['time'][1]
+                    liftoffUTC = flight['timeUTC'][0]
+                    landingUTC = flight['timeUTC'][1]
+                    refFlightDates = fireDB.collection('Flights').document(f"{f['origin']}-{f['destination']}").collection('FlightDates')
+                    #FlightDates collection document
+                    ref = refFlightDates.document(f"{f['origin']}-{f['destination']}_{ryanDateTime(flight['time'][0], 'datetime')}")
+                    fireBatch.set(ref, {
+                        'OriginAirport': f['origin'],
+                        'DestinationAirport': f['destination'],
+                        'Date': ryanDateTime(d['dateOut'], 'dateid:int'),
+                        'FlightNumber': flight['flightNumber'].replace(' ',''),
+                        'OperatedBy': flight['operatedBy'],
+                        'LiftoffLocalTimeFull': liftoffLocal,
+                        'LiftoffLocalTimeHour': ryanDateTime(liftoffLocal, 'hour:int'),
+                        'LiftoffLocalTimeMinute': ryanDateTime(liftoffLocal, 'minute:int'),
+                        'LandingLocalTimeFull': landingLocal,
+                        'LandingLocalTimeHour': ryanDateTime(landingLocal, 'hour:int'),
+                        'LandingLocalTimeMinute': ryanDateTime(landingLocal, 'minute:int'),
+                        'LiftoffUTCTimeFull': liftoffUTC,
+                        'LiftoffUTCTimeHour': ryanDateTime(liftoffUTC, 'hour:int'),
+                        'LiftoffUTCTimeMinute': ryanDateTime(liftoffUTC, 'minute:int'),
+                        'LandingUTCTimeFull': landingUTC,
+                        'LandingUTCTimeHour': ryanDateTime(landingUTC, 'hour:int'),
+                        'LandingUTCTimeMinute': ryanDateTime(landingUTC, 'minute:int'),
+                        'Duration': flight['duration']
+                    })
+                    #FlightFares
+                    ref2 = refFlightDates.document(f"{f['origin']}-{f['destination']}_{ryanDateTime(flight['time'][0], 'datetime')}").collection('FlightFares').document(str(date.today()).replace('-',''))
+                    fireBatch.set(ref2, {
+                        'CheckDate': int(str(date.today()).replace('-','')),
+                        'FaresLeft': flight['faresLeft'],
+                        'FlightKey': flight['flightKey'],
+                        'FareClass': flight['regularFare']['fareClass'],
+                        'FareType': flight['regularFare']['fares'][0]['type'],
+                        'Fare': flight['regularFare']['fares'][0]['amount'],
+                        'PublishedFare': flight['regularFare']['fares'][0]['publishedFare'],
+                        'HasDiscount': flight['regularFare']['fares'][0]['hasDiscount'],
+                        'HasPromoDiscount': flight['regularFare']['fares'][0]['hasPromoDiscount'],
+                        'DiscountInPercent': flight['regularFare']['fares'][0]['discountInPercent'],
+                        'DiscountAmount': flight['regularFare']['fares'][0]['discountAmount'],
+                        'HasBogof': flight['regularFare']['fares'][0]['hasBogof'],
+                        'FaresInfantsLeft': flight['infantsLeft']
+                    })
+        fireDoc = fireDB.collection('Flights').document(f"{f['origin']}-{f['destination']}")
+        fireDoc.set({
+            'LatestCheckDate': int(str(date.today()).replace('-',''))
+        })
